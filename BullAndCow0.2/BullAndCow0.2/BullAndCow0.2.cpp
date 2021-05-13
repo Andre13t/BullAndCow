@@ -1,45 +1,48 @@
 #include <iostream>       // std::cout
-#include <stdio.h>
-#include "my_class.h" // header file
-#include <stdlib.h>   // srand, rand 
-#include <time.h>     // time 
+#include <stdio.h>        // lib
+#include "my_class.h"     // header file
+#include <stdlib.h>       // srand, rand 
+#include <time.h>         // time 
 #include <string>         // std::string
 #include <locale>         // std::locale, std::isdigit
 #include <sstream>        // std::stringstream
-#include <algorithm>
+#include <algorithm>      // using the for_each to putting a lowe case the string
+
 int main()
 {
-	// ramdom gererator claas func 
+	// ramdom gererator
 	srand((unsigned int)time(NULL));
-	// link the heade file
+	
+	// link the heade file, everything that has mc. is the import of the header file
 	N::my_class mc;
+	
 	// welcome to player, tip and a explanation
 	mc.Set_game();
 
 	// game loop
 	while (mc.input != "quit")
 	{
-
-		std::cin >> mc.input;// get the guess of player
-		//int toupper(int c);
-		std::for_each(mc.input.begin(), mc.input.end(), [](char& c) // putting the guess in lower case letter
-			{
-			c = ::tolower(c);
-			});
+		// get the input of player
+		std::cin >> mc.input;
 		
+		std::for_each(mc.input.begin(), mc.input.end(), [](char& c) // putting the guess in lower case letter
+		{
+			c = ::tolower(c);
+		});
+
 		if (mc.validWord(mc.input)) // validation the player guess
 		{
 			mc.IsCorrect(mc.input); // comparing the guess and the secret word
 		}
 		else if (mc.input != "reset" && mc.input != "quit") // restart or quit the game or the player wrote it wrong
 		{
-			std::cout << "write correctly: ";
+			std::cout  <<"Tip: the word has no duplicate and have " << mc.secretWord.length() <<
+				" letters\n\n" << "write correctly: " << std::endl;
 		}
-		else if (mc.input == "reset")
+		else if (mc.input == "reset") // if the player want to play again
 		{
 			mc.Set_game();
-		}
-		
+		}	
 	}
 
 	return 0;
@@ -65,19 +68,22 @@ void N::my_class::IsCorrect(std::string inputWord)
 	else
 	{
 		std::cout << "Is correct word, if you want to play again type \"reset\" ou \"quit\" to end game:";
-		return; // break the function to not show the count of bulls and cows because the guess is right
+		return; // break the function to not show the count of bulls and cows because the player is right
 	}
 
+	// show the bulls and cows what the player guesses
 	if (inputWord != "quit" && inputWord != "reset")
 		std::cout << "bull: " << bull << " cow: " << cow << std::endl;
 
-	cow, bull = 0;
+	// reset the count
+	cow = 0;
+	bull = 0;
 }
 
 // function to validate the entry
 bool N::my_class::validWord(std::string inputWord)
 {
-	int a{};
+
 	if (inputWord.length() == secretWord.length()) {
 		for (size_t i = 0; i < secretWord.length(); i++)// loop to see if there are duplicate letters
 		{
@@ -88,24 +94,27 @@ bool N::my_class::validWord(std::string inputWord)
 					return false;
 			}
 		}
-		for (size_t i = 0; i < secretWord.length(); i++)// loop to see if there are number
-		{
-			if (isdigit(inputWord[i]))
-			{
-				a++;
-			}
-		}
-		for (size_t i = 0; i < secretWord.length(); i++)
+		
+		for (size_t i = 0; i < secretWord.length(); i++) // loop to see if is out of range of alfabect a-z(97-122) ASCII
 		{
 			if (!(inputWord[i] >= 97 && inputWord[i] <= 122))
 				return false;		
 		}
+
+		for (size_t i = 0; i < secretWord.length(); i++)// loop to see if there are number, I know it's redundant because the numbers are already out of the ASCII alphabet
+		{
+			if (isdigit(inputWord[i]))
+			{
+				return false;
+			}
+		}
 	}
-	if ((secretWord.length() != inputWord.length()) || (a != 0))
+	else
+	{
 		return false;
-
-	return true;
-
+	}
+		
+	return true; // if the player hits it ends
 }
 
 // function that generates the secret word
@@ -136,7 +145,7 @@ void N::my_class::Set_game()
 	//clean the screen
 	system("cls");
 	std::cout << "Welcome to Bull and Cow game!!!\n" <<
-		" \"Cow\" means a letter in the wrong position, while \"Bull\" means a letter in the right position.\n" <<
-		"Tip: the word has no duplicate letters and have " << secretWord.length() <<
-		" letters. \nWrite: ";
+		"\"Cow\" means a letter in the wrong position, while \"Bull\" means a letter in the right position.\n" <<
+		"Tip: the word has no duplicate  and have " << secretWord.length() <<
+		" letters. \n\nWrite: ";
 }
