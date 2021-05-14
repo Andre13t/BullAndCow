@@ -4,7 +4,6 @@
 #include <stdlib.h>       // srand, rand 
 #include <time.h>         // time 
 #include <string>         // std::string
-#include <locale>         // std::locale, std::isdigit
 #include <sstream>        // std::stringstream
 #include <algorithm>      // using the for_each to putting a lowe case the string
 
